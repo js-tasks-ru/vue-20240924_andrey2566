@@ -1,27 +1,26 @@
-import { defineComponent } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { getWeatherData, WeatherConditionIcons } from './weather.service.ts'
 
 export default defineComponent({
   name: 'WeatherApp',
-  data() {
-    return {
-      weather:getWeatherData(),
-      WeatherConditionIcons
+
+  setup() {
+    const weather = ref(getWeatherData())
+    const weatherConditionIcons = WeatherConditionIcons
+
+    // Функция для преобразования времени в минуты
+    const toMinutes = time => {
+      const [hours, minutes] = time.split(':').map(Number)
+      return hours * 60 + minutes
     }
-  },
 
-  computed: {
-    calculationWeather () {
-      const toMinutes = (time) => {
-        const [hours, minutes] = time.split(':').map(Number);
-        return hours * 60 + minutes;
-      }
+    // Функция для получения иконки погоды по id
+    const getIcon = id => {
+      return weatherConditionIcons[id]
+    }
 
-      const getIcon = (id) => {
-        return this.WeatherConditionIcons[id]
-      }
-
-      return this.weather.map(item => {
+    const calculationWeather = computed(() => {
+      return weather.value.map(item => {
         if (item.current.temp) {
           let temp = (item.current.temp - 273.15).toFixed(1)
           item.current.temp = `${temp} °C`
@@ -31,14 +30,18 @@ export default defineComponent({
           item.current.pressure = (item.current.pressure * 0.75).toFixed(0)
         }
         if (item.current.dt) {
-          const startMinutes = toMinutes(item.current.sunrise);
-          const endMinutes = toMinutes(item.current.sunset);
-          const currentMinutes = toMinutes(item.current.dt);
+          const startMinutes = toMinutes(item.current.sunrise)
+          const endMinutes = toMinutes(item.current.sunset)
+          const currentMinutes = toMinutes(item.current.dt)
           item.current.isNight = currentMinutes < startMinutes && currentMinutes < endMinutes
         }
 
         return item
       })
+    })
+
+    return {
+      calculationWeather,
     }
   },
 
