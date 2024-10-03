@@ -4,7 +4,7 @@ export default defineComponent({
   name: 'CounterApp',
 
   setup() {
-    let count = ref(0)
+    const count = ref(0)
 
     return {
       count
