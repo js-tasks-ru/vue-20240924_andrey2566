@@ -29,7 +29,8 @@ export default defineComponent({
   template: `
     <div>
       <p style="margin: 1em 0">
-        <UiCounter v-model:count="count1" />
+        <!-- <UiCounter :count="count1" @change="(n) => count1 -= n"/> -->
+        <UiCounter v-model:count="count1"/>
       </p>
       <p style="margin: 1em 0">
         <UiCounter v-model:count="count2" :min="1" :max="3" />
