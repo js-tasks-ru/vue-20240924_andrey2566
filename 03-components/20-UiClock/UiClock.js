@@ -1,9 +1,27 @@
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
+function formatAsLocalDate() {
+  return new Date().toLocaleTimeString(navigator.language, { timeStyle: 'medium' })
+}
 
 export default defineComponent({
   name: 'UiClock',
 
-  setup() {},
+  setup() {
+    const date = ref(formatAsLocalDate())
+    let interval
 
-  template: `<div class="clock">10:12:02</div>`,
+    onMounted(() => {
+      interval = setInterval(function () {
+        date.value = formatAsLocalDate()
+      }, 1000)
+    })
+
+    onUnmounted(() => clearInterval(interval))
+
+    return {
+      date,
+    }
+  },
+
+  template: `<div class="clock">{{ date }}</div>`,
 })
