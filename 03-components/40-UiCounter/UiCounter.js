@@ -13,7 +13,6 @@ export default defineComponent({
     count: {
       type: Number,
       required: true,
-      default: 0,
     },
 
     min: {
@@ -31,21 +30,21 @@ export default defineComponent({
 
   setup(props, { emit }) {
     // Рекомендуется для практики реализовать обработку событий внутри setup, а не непосредственно в шаблоне
-    const countRef = toRef(() => props.count)
+    const count = toRef(() => props.count)
 
     function decrement() {
-      emit('update:count', countRef.value - 1)
+      emit('update:count', count.value - 1)
     }
 
     function increment() {
-      emit('update:count', countRef.value + 1)
+      emit('update:count', count.value + 1)
     }
 
     const isDisabledDecrement = computed(() => {
-      return countRef.value === props.min
+      return count.value === props.min
     })
     const isDisabledIncrement = computed(() => {
-      return countRef.value === props.max
+      return count.value === props.max
     })
 
     return {
@@ -59,14 +58,14 @@ export default defineComponent({
   template: `
     <div class="counter">
       <!-- <UiButton aria-label="Decrement" @click="$emit('change', 1)">➖</UiButton> -->
-      <UiButton 
-        aria-label="Decrement" 
+      <UiButton
+        aria-label="Decrement"
         :disabled="isDisabledDecrement"
         @click="decrement"
        >➖</UiButton>
       <span class="count" data-testid="count">{{ count }}</span>
-      <UiButton 
-        aria-label="Increment" 
+      <UiButton
+        aria-label="Increment"
         :disabled="isDisabledIncrement"
         @click="increment"
        >➕</UiButton>
